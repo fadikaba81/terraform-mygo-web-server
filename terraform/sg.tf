@@ -19,7 +19,7 @@ resource "aws_security_group" "sg_ssh" {
     ]
     from_port = 0
     to_port   = 0
-    protocol  = "tcp"
+    protocol  = "-1"
   }
 }
 
@@ -54,7 +54,7 @@ resource "aws_security_group" "sg_http" {
     ]
     from_port = 0
     to_port   = 0
-    protocol  = "tcp"
+    protocol  = "-1"
   }
 
 }
@@ -77,8 +77,8 @@ resource "aws_security_group" "sg_ping" {
     cidr_blocks = [
       "0.0.0.0/0"
     ]
-    from_port = -1
-    to_port   = -1
+    from_port = 0
+    to_port   = 0
     protocol  = "icmp"
   }
 

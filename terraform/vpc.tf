@@ -20,17 +20,12 @@ resource "aws_internet_gateway" "vpc_ig" {
 
 }
 
-resource "aws_route_table" "rt" {
-  vpc_id = aws_vpc.vpc.id
+resource "aws_route" "rt" {
+  route_table_id = aws_vpc.vpc.main_route_table_id
 
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.vpc_ig.id
-  }
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.vpc_ig.id
 
-  tags = {
-    Name = "vpc_route_table"
-  }
 }
 
 resource "aws_subnet" "vpc_private_subnet" {

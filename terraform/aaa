@@ -1,0 +1,57 @@
+#!/bin/bash
+apt update -y
+apt install -y mysql-client
+
+DB_HOST="mysqldb.cjmgkwia4eyd.ap-southeast-2.rds.amazonaws.com"
+DB_USER="fkaba"
+DB_PASS="${var.dbpass}"
+
+# Wait for RDS to be ready
+until mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -e "SELECT 1;" > /dev/null 2>&1; do
+  echo "Waiting for RDS to become available..."
+  sleep 10
+done
+
+mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" <<EOSQL
+CREATE DATABASE IF NOT EXISTS myapp_db CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE myapp_db;
+
+CREATE TABLE IF NOT EXISTS myapp (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  page_name VARCHAR(255),
+  visit_count INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS api_requests (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  request_time DATETIME,
+  endpoint VARCHAR(255),
+  status_code INT,
+  latency_ms INT,
+  success BOOLEAN,
+  client_ip VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS slo (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  service_name VARCHAR(255),
+  slo_value FLOAT,
+  windows_days INT,
+  slo_type VARCHAR(125),
+  threshold_ms INT,
+  status VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS metrics (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  service_name VARCHAR(255),
+  metric_type VARCHAR(255),
+  timestamp DATETIME,
+  metric_value FLOAT,
+  status FLOAT
+);
+EOSQL
+
+echo "Schema and tables created successfully"
+

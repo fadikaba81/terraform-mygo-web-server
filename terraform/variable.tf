@@ -36,3 +36,9 @@ variable "dbpass" {
   description = "This is DB Password, it will be move to Terraform Cloud"
 
 }
+
+variable "enviornment" {
+  type    = string
+  default = "dev"
+
+}
