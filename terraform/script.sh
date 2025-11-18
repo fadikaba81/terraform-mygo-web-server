@@ -2,13 +2,11 @@
 apt update -y
 apt install -y mysql-client
 
-DB_HOST="mysqldb.cjmgkwia4eyd.ap-southeast-2.rds.amazonaws.com"
-DB_USER="fkaba"
-DB_PASS="${dbpass}"
+echo "DB_HOST=mysqldb.cjmgkwia4eyd.ap-southeast-2.rds.amazonaws.com" >> /etc/environment
+echo "DB_USER=fkaba" >> /etc/environment
+echo "DB_PASS=${dbpass}" >> /etc/environment
 
-export DB_USER=$DB_USER
-export DB_PASS=$DB_PASS
-export DB_HOST=$DB_HOST
+source /etc/environment
 
 # Wait for RDS to be ready
 until mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -e "SELECT 1;" > /dev/null 2>&1; do

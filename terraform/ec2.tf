@@ -9,7 +9,7 @@ resource "aws_instance" "ec2_web_server" {
   aws_security_group.sg_mysql.id]
   associate_public_ip_address = true
   key_name                    = aws_key_pair.ec2_key.key_name
-  user_data                   = templatefile("script.sh", {
+  user_data = templatefile("script.sh", {
     dbpass = var.dbpass
   })
 
@@ -32,6 +32,12 @@ data "aws_ami" "ec2_ubuntu" {
 
   owners = ["099720109477"]
 }
+
+resource "local_file" "private_key_name" {
+  content  = tls_private_key.ec2_tls_key.private_key_pem
+  filename = "MyAWSKeys${var.enviornment}"
+}
+
 
 resource "aws_key_pair" "ec2_key" {
   key_name   = "MyAWSKeys${var.enviornment}"
