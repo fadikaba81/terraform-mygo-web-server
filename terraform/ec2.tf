@@ -9,7 +9,9 @@ resource "aws_instance" "ec2_web_server" {
   aws_security_group.sg_mysql.id]
   associate_public_ip_address = true
   key_name                    = aws_key_pair.ec2_key.key_name
-  user_data                   = file("script.sh")
+  user_data                   = templatefile("script.sh", {
+    dbpass = var.dbpass
+  })
 
 
 }

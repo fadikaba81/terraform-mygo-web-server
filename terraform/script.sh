@@ -4,12 +4,16 @@ apt install -y mysql-client
 
 DB_HOST="mysqldb.cjmgkwia4eyd.ap-southeast-2.rds.amazonaws.com"
 DB_USER="fkaba"
-DB_PASS="${var.dbpass}"
+DB_PASS="${dbpass}"
+
+export DB_USER=$DB_USER
+export DB_PASS=$DB_PASS
+export DB_HOST=$DB_HOST
 
 # Wait for RDS to be ready
 until mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" -e "SELECT 1;" > /dev/null 2>&1; do
   echo "Waiting for RDS to become available..."
-  sleep 10
+  sleep 20
 done
 
 mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASS" <<EOSQL
